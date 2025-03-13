@@ -80,8 +80,8 @@ jobs:
       with:
         push: true
         tags: |
-          yourusername/adhdlearningcompanion:latest
-          yourusername/adhdlearningcompanion:${{ github.sha }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/adhdlearningcompanion:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/adhdlearningcompanion:${{ github.sha }}
 
   deploy:
     needs: build
@@ -98,4 +98,17 @@ jobs:
         script: |
           cd /opt/ADHDLearningCompanion
           docker-compose pull
-          docker-compose up -d 
+          docker-compose up -d
+
+    - name: Check DockerHub credentials
+      run: |
+        if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+          echo "DOCKERHUB_USERNAME is set"
+        else
+          echo "DOCKERHUB_USERNAME is NOT set"
+        fi
+        
+        if [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+          echo "DOCKERHUB_TOKEN is set"
+        else
+          echo "DOCKERHUB_TOKEN is NOT set" 
